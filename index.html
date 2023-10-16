@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tabs Link Opener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        #container {
+            max-width: 80%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        input[type="number"],
+        button {
+            display: block;
+            width: 93%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        select {
+            background-color: #fff;
+        }
+
+        #delaySeconds {
+            display: none;
+        }
+
+        .start-button {
+            background-color: #007BFF;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .start-button:hover {
+            background-color: #0056b3;
+        }
+
+        .stop-button {
+            background-color: #FF0000;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .stop-button:hover {
+            background-color: #CC0000;
+        }
+
+        #tabCountDisplay {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Tabs Link Opener</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <input type="number" id="tabCount" placeholder="How many tabs?">
+        <select id="openOption">
+            <option value="all">Open All</option>
+            <option value="onebyone">Open One by One</option>
+        </select>
+        <input type="number" id="delaySeconds" placeholder="Delay in seconds">
+        <button id="startButton" class="start-button">Start</button>
+        <button id="stopButton" class="stop-button" style="display: none;">Stop</button>
+        <div id="tabCountDisplay"></div>
+    </div>
+
+    <script>
+        var openedTabsCount = 0;
+        var stopFlag = false;
+
+        document.getElementById("openOption").addEventListener("change", function () {
+            var openOption = document.getElementById("openOption").value;
+            var delaySecondsInput = document.getElementById("delaySeconds");
+
+            if (openOption === "onebyone") {
+                delaySecondsInput.style.display = "block";
+            } else {
+                delaySecondsInput.style.display = "none";
+            }
+        });
+
+        document.getElementById("startButton").addEventListener("click", function () {
+            if (stopFlag) {
+                stopFlag = false;
+                document.getElementById("stopButton").style.display = "none";
+                return;
+            }
+
+            var url = document.getElementById("urlInput").value;
+            var tabCount = parseInt(document.getElementById("tabCount").value, 10);
+            var openOption = document.getElementById("openOption").value;
+            var delaySeconds = parseInt(document.getElementById("delaySeconds").value, 10);
+
+            openedTabsCount = 0;
+
+            if (url.trim() !== "" && !isNaN(tabCount) && tabCount > 0) {
+                // Check if the URL starts with http:// or https://
+                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    // If not, assume http:// and prepend it
+                    url = "http://" + url;
+                }
+
+                for (var i = 0; i < tabCount; i++) {
+                    if (stopFlag) {
+                        stopFlag = false;
+                        document.getElementById("stopButton").style.display = "none";
+                        return;
+                    }
+
+                    if (openOption === "all") {
+                        window.open(url, "_blank");
+                        openedTabsCount++;
+                    } else if (openOption === "onebyone") {
+                        setTimeout(function () {
+                            if (!stopFlag) {
+                                window.open(url, "_blank");
+                                openedTabsCount++;
+                                document.getElementById("tabCountDisplay").textContent = "Tabs Opened: " + openedTabsCount;
+                            }
+                        }, i * (delaySeconds * 1000));
+                    }
+                }
+
+                // Show the "Stop" button during the process
+                document.getElementById("startButton").style.display = "none";
+                document.getElementById("stopButton").style.display = "block";
+            }
+        });
+
+        document.getElementById("stopButton").addEventListener("click", function () {
+            stopFlag = true;
+            // Show the "Start" button and hide the "Stop" button
+            document.getElementById("startButton").style.display = "block";
+            document.getElementById("stopButton").style.display = "none";
+        });
+    </script>
+</body>
+</html>
