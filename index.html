@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tabs Link Opener</title>
+    <title>Tab Opener</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -27,7 +27,7 @@
         input[type="number"],
         button {
             display: block;
-            width: 93%;
+            width: 100%;
             margin: 10px 0;
             padding: 10px;
             border: 1px solid #ccc;
@@ -72,7 +72,7 @@
 </head>
 <body>
     <div id="container">
-        <h1>Tabs Link Opener</h1>
+        <h1>Tab Opener</h1>
         <input type="text" id="urlInput" placeholder="Enter URL">
         <input type="number" id="tabCount" placeholder="How many tabs?">
         <select id="openOption">
@@ -137,6 +137,11 @@
                                 window.open(url, "_blank");
                                 openedTabsCount++;
                                 document.getElementById("tabCountDisplay").textContent = "Tabs Opened: " + openedTabsCount;
+
+                                // Check if all tabs are opened
+                                if (openedTabsCount === tabCount) {
+                                    alert("All tabs have been opened.");
+                                }
                             }
                         }, i * (delaySeconds * 1000));
                     }
